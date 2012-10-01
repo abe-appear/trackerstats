@@ -54,6 +54,9 @@ class ChartPresenter
     end
   end
 
+  def impediments_tracker_chart(title = "Impediments Stories")
+
+  end
   def accepted_story_types_chart(title = "Accepted Story Types")
     colors = []
     data_table = GoogleVisualr::DataTable.new

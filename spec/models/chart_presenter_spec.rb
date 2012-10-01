@@ -46,7 +46,23 @@ describe ChartPresenter do
             :story_type => Story::BUG,
             :created_at => DateTime.parse("2011-01-22 00:01:00 Z"), # iteration 3
             :current_state => "unscheduled",
-            :accepted? => false)
+            :accepted? => false),
+
+        #Impediments
+        double(
+            :story_type => Story::FEATURE,
+            :created_at => DateTime.parse("2011-02-04 00:01:00 Z"), # iteration 4
+            :current_state => "accepted",
+            :estimate => 1,
+            :accepted_at => DateTime.parse("2011-02-05 00:02:00 Z"),# ->iteration 4
+            :accepted? => true),
+        double(
+            :story_type => Story::CHORE,
+            :created_at => DateTime.parse("2011-02-06 00:01:00 Z"), # ->iteration 4
+            :current_state => "started",
+            :accepted? => false),
+
+
     ]
 
     stories = double("project stories")
@@ -73,12 +89,18 @@ describe ChartPresenter do
         :start_date => Date.parse("2011-01-24"),
         :finish_date => Date.parse("2011-01-31"),
         :stories => []),
+      double(
+          :number => 5,
+          :start_date => Date.parse("2011-01-31"),
+          :finish_date => Date.parse("2011-02-07"),
+          :stories => []),
       ]
 
     @iterations[0].stories << @sample_stories[1]
     @iterations[2].stories << @sample_stories[3]
     @iterations[2].stories << @sample_stories[2]
     @iterations[3].stories << @sample_stories[0]
+    @iterations[4].stories << @sample_stories[6]<< @sample_stories[7]
   end
 
 
@@ -189,6 +211,23 @@ describe ChartPresenter do
       end
     end
 
+    describe "#impediments_tracker_chart" do
+      let(:chart_method) {"impediments_tracker_chart"}
+
+      it_should_behave_like "a chart generation method"
+
+      it "produces a chart" do
+        rows = chart.data_table.rows
+
+        def count_impediment_stories(type)
+          result = 0
+        end
+      end
+
+
+    end
+
+
     describe "charts that can be filtered" do
 
       let(:story_filter) {Story::ALL_STORY_TYPES}
@@ -206,7 +245,7 @@ describe ChartPresenter do
           it "accepts an array of the story types to be filtered" do
             rows = chart.data_table.rows
 
-            rows.length.should == 5
+            rows.length.should == 6
                                                # I   Bc Ba
             filter_tooltips(rows, 0).should == ["0", 0, 0]
             filter_tooltips(rows, 1).should == ["1", 1, 0]
@@ -219,7 +258,7 @@ describe ChartPresenter do
         it "produces an area chart for the discovery and subsequent acceptance of stories" do
           rows = chart.data_table.rows
 
-          rows.length.should == 5
+          rows.length.should == 6
                                              # I   Fc Fa Bc Ba Cc Ca
           filter_tooltips(rows, 0).should == ["0", 1, 0, 0, 0, 0, 0]
           filter_tooltips(rows, 1).should == ["1", 1, 1, 1, 0, 0, 0]
@@ -240,7 +279,7 @@ describe ChartPresenter do
           it "accepts an array of story types to filter" do
             rows = chart.data_table.rows
 
-            rows.length.should == 2
+            rows.length.should == 3
                                               # I  Fd
             filter_tooltips(rows, 0).should == [1, 25]
             filter_tooltips(rows, 1).should == [2, 06]
@@ -250,7 +289,7 @@ describe ChartPresenter do
         it "produces a scatter chart of accepted stories per iteration" do
           rows = chart.data_table.rows
 
-          rows.length.should == 2
+          rows.length.should == 3
                                             # I  Fd   Bd   Cd
           filter_tooltips(rows, 0).should == [1, 25, nil, nil]
           filter_tooltips(rows, 1).should == [2, 06, nil, nil]
@@ -297,7 +336,7 @@ describe ChartPresenter do
       rows = chart.data_table.rows
 
       rows.should_not be_nil
-      rows.length.should == 5
+      rows.length.should == 6
 
       filter_tooltips(rows, 0).should == ["0", 0]
       filter_tooltips(rows, 1).should == [@iterations[0].number.to_s, 0]
@@ -325,7 +364,7 @@ describe ChartPresenter do
     it "should detect start and end date from provided stories" do
       chart_presenter = ChartPresenter.new(@iterations, @sample_stories)
       chart_presenter.start_date.should == @sample_stories[4].created_at.to_date
-      chart_presenter.end_date.should == @sample_stories[0].accepted_at.to_date
+      chart_presenter.end_date.should == @sample_stories[7].accepted_at.to_date
     end
 
     it "should default to current date for start and end date when no stories provided" do

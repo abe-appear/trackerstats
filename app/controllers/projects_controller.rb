@@ -19,6 +19,8 @@ class ProjectsController < ApplicationController
     @charts = []
     @charts << chart_presenter.accepted_story_types_chart
 
+    @charts << chart_presenter.impediments_tracker_chart
+
     # Chart 1: Velocity
     @charts << chart_presenter.date_range_velocity_chart
 
