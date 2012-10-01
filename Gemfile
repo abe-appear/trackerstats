@@ -32,7 +32,7 @@ end
 group :test, :development do
   gem 'rspec-rails', '>= 2.8.1'
   gem 'evergreen', require: 'evergreen/rails'
-  gem 'ruby-debug19'
+  #gem 'ruby-debug19'
   gem 'factory_girl_rails'
   gem 'timecop'
 end

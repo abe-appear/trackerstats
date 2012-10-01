@@ -12,7 +12,7 @@ describe "Project" do
   end
 
   it "uses proper API for fetching projects"  do
-    uri = "https://www.pivotaltracker.com/services/v3/projects.xml"
+    uri = "https://www.pivotaltracker.com/services/v4/projects.xml"
     stub_request(:get, uri)
     Project.all
     WebMock.should have_requested(:get, uri).with(headers: headers)
@@ -20,7 +20,7 @@ describe "Project" do
 
   describe "#stories" do
 
-    let(:uri) { "https://www.pivotaltracker.com/services/v3/projects/#{project.id}/stories.xml" }
+    let(:uri) { "https://www.pivotaltracker.com/services/v4/projects/#{project.id}/stories.xml" }
 
     before do
       stub_request(:get, uri)
@@ -41,7 +41,7 @@ describe "Project" do
 
   describe "#iterations" do
 
-    let(:uri) { "https://www.pivotaltracker.com/services/v3/projects/#{project.id}/iterations.xml" }
+    let(:uri) { "https://www.pivotaltracker.com/services/v4/projects/#{project.id}/iterations.xml" }
 
     before do
       stub_request(:get, uri)

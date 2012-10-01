@@ -1,5 +1,5 @@
 class TrackerApi
-  API_BASE_PATH = "https://www.pivotaltracker.com/services/v3"
+  API_BASE_PATH = "https://www.pivotaltracker.com/services/v4"
   API_TOKEN_KEY = :api_token
 
   attr_reader :api_token

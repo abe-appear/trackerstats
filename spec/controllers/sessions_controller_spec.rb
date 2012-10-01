@@ -15,7 +15,7 @@ describe SessionsController do
       let(:params)   { { username: username, password: password } }
 
       it "sessionizes API Token" do
-        stub_request(:post, 'https://www.pivotaltracker.com/services/v3/tokens/active')
+        stub_request(:post, 'https://www.pivotaltracker.com/services/v4/tokens/active')
             .with(body: { username: username, password: password })
             .to_return(body: "<guid>#{api_token}</guid>")
 
