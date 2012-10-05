@@ -96,7 +96,7 @@ class TimeChartPresenter
 
     Story::ALL_STORY_TYPES.each do |type|
       colors << STORY_TYPE_COLORS[type][:default]
-      data_table.add_row([type.pluralize.capitalize, accepted_stories_with_types([type]).size])
+      data_table.add_row([type.pluralize.capitalize, accepted_stories_types([type]).size])
     end
 
     opts = {
@@ -139,7 +139,7 @@ class TimeChartPresenter
 
   def time_spent_on_story(story)
     activities = story.activities
-    puts "Story id = #{story.id}"
+    #puts "Story id = #{story.id}"
     progress_time = 0
     last_started_time = 0
     activities.each do |activity|
@@ -169,8 +169,12 @@ class TimeChartPresenter
       #puts "time spent on story = #{time_difference}"
       progress_time += (time_difference[:week] * 7 * 8) + (time_difference[:day] * 8) + (time_difference[:hour]> 8 ? 8: time_difference[:hour])
     end
-    puts "progress time = #{progress_time}"
+    #puts "progress time = #{progress_time}"
     return progress_time
+  end
+
+  def accepted_stories_types(types)
+    stories_with_types_states(types, ["accepted"])
   end
 
   def stories_with_types_states(types, states)
