@@ -9,6 +9,7 @@ describe TimeChartPresenter do
   before :each do
     @sample_stories = [
         double(# -> Story is done and belongs to an old iteration
+            :id => 1,
             :story_type => Story::FEATURE,
             :created_at => DateTime.parse("2011-12-01 10:01:00 Z"),
             :updated_at => DateTime.parse("2012-01-12 11:02:00 Z"),
@@ -18,6 +19,7 @@ describe TimeChartPresenter do
             :accepted? => true,
             :activities => []),
         double(
+            :id => 2,
             :story_type => Story::FEATURE,
             :created_at => DateTime.parse("2012-01-01 10:01:00 Z"), # -> planned
             :updated_at => DateTime.parse("2012-01-11 11:02:00 Z"),
@@ -83,6 +85,7 @@ describe TimeChartPresenter do
             ]
         ),
         double(
+            :id => 3,
             :story_type => Story::FEATURE,
             :created_at => DateTime.parse("2011-12-25 10:01:00 Z"), # -> planned
             :updated_at => DateTime.parse("2012-01-12 11:02:00 Z"),
@@ -123,6 +126,7 @@ describe TimeChartPresenter do
             ]
         ),
         double(
+            :id => 4,
             :story_type => Story::FEATURE,
             :created_at => DateTime.parse("2012-01-03 10:01:00 Z"),
             :updated_at => DateTime.parse("2012-01-13 10:01:00 Z"),
@@ -171,12 +175,13 @@ describe TimeChartPresenter do
             ]
         ),
         double(
+            :id => 5,
             :story_type => Story::CHORE,
             :created_at => DateTime.parse("2012-01-04 10:01:00 Z"), # -> planned
             :updated_at => DateTime.parse("2012-01-16 10:01:00 Z"),
             :current_state => "finished",
             :accepted? => false,
-            :activities => [# Time spent on this story -->  3d 4h + 4h
+            :activities => [# Time spent on this story -->  3d 4h + 4h  = 32
                 double(
                     :occurred_at => DateTime.parse("2012-01-04 10:01:00 Z"),
                     :event_type => "story_create",
@@ -219,6 +224,7 @@ describe TimeChartPresenter do
 
         ),
         double(
+            :id => 6,
             :story_type => Story::BUG,
             :created_at => DateTime.parse("2012-01-05 10:01:00 Z"), # -> planned
             :updated_at => DateTime.parse("2012-01-16 10:01:00 Z"),
@@ -242,6 +248,7 @@ describe TimeChartPresenter do
             ]
         ),
         double(
+            :id => 7,
             :story_type => Story::FEATURE,
             :created_at => DateTime.parse("2012-01-11 10:01:00 Z"), # -> impediment
             :updated_at => DateTime.parse("2012-01-16 11:02:00 Z"),
@@ -249,25 +256,123 @@ describe TimeChartPresenter do
             :accepted_at => DateTime.parse("2012-01-16 11:02:00 Z"),
             :estimate => 1,
             :accepted? => true,
-            :activities => []),
+            :activities => [# Time spent on this story --> 4 hrs / 4 hrs
+                double(
+                    :occurred_at => DateTime.parse("2012-01-11 10:01:00 Z"),
+                    :event_type => "story_create",
+                    :description => "James Kirk created the story",
+                    :stories => [double(:current_state => "unscheduled")]
+                ),
+                double(
+                    :occurred_at => DateTime.parse("2012-01-12 07:01:00 Z"),
+                    :event_type => "story_update",
+                    :description => "James Kirk started the story",
+                    :stories => [double(
+                                     :current_state => "started"
+                                 )]
+                ),
+                double(         # story is updated, but story state is not changed
+                    :occurred_at => DateTime.parse("2012-01-12 09:01:00 Z"),
+                    :event_type => "story_update",
+                    :description => "James Kirk edited &quot;Divert power from warp coils&quot;",
+                    :stories => [double(
+                                     :current_name => "new name"
+                                 )]
+                ),
+                double(         # story is updated, but story state is not changed
+                    :occurred_at => DateTime.parse("2012-01-12 10:01:00 Z"),
+                    :event_type => "story_update",
+                    :description => "James Kirk estimated &quot;Divert power from warp coils&quot; as 3 points",
+                    :stories => [double(
+                                     :current_name => "new name"
+                                 )]
+                ),
+                double(
+                    :occurred_at => DateTime.parse("2012-01-12 11:01:00 Z"),
+                    :event_type => "story_update",
+                    :description => "James Kirk finished the story",
+                    :stories => [double(
+                                     :current_state => "finished"
+                                 )]
+                ),
+                double(
+                    :occurred_at => DateTime.parse("2012-01-12 14:10:00 Z"),
+                    :event_type => "story_update",
+                    :description => "James Kirk delivered the story",
+                    :stories => [double(
+                                     :current_state => "delivered"
+                                 )]
+                ),
+                double(
+                    :occurred_at => DateTime.parse("2012-01-13 15:01:00 Z"),
+                    :event_type => "story_update",
+                    :description => "James Kirk accepted the story",
+                    :stories => [double(
+                                     :current_state => "accepted"
+                                 )]
+                )
+            ]
+        ),
         double(
+            :id => 8,
             :story_type => Story::CHORE,
-            :created_at => DateTime.parse("2012-01-17 10:01:00 Z"), # -> impediment
-            :updated_at => DateTime.parse("2012-01-17 16:02:00 Z"),
-            :current_state => "accepted",
-            :accepted_at => DateTime.parse("2012-01-17 16:02:00 Z"),
+            :created_at => DateTime.parse("2012-01-16 10:00:00 Z"), # -> impediment
+            :updated_at => DateTime.parse("2012-01-16 16:00:00 Z"),
+            :current_state => "started",
             :accepted? => false,
-            :activities => []),
+            :activities => [# Time spent on this story -->  18h --> 8h
+                double(
+                    :occurred_at => DateTime.parse("2012-01-16 10:00:00 Z"),
+                    :event_type => "story_create",
+                    :description => "James Kirk created the story",
+                    :stories => [double(:current_state => "unscheduled")]
+                ),
+                double(
+                    :occurred_at => DateTime.parse("2012-01-16 16:00:00 Z"),
+                    :event_type => "story_update",
+                    :description => "James Kirk created the story",
+                    :stories => [double(
+                                     :current_state => "started"
+                                 )]
+                )
+            ]
+        ),
         double(
+            :id => 9,
             :story_type => Story::BUG,
             :created_at => DateTime.parse("2012-01-14 10:01:00 Z"), # -> impediment
-            :updated_at => DateTime.parse("2012-01-18 10:01:00 Z"), # -> impediment
+            :updated_at => DateTime.parse("2012-01-18 10:01:00 Z"),
             :current_state => "started", #
             :accepted? => false,
-            :activities => []),
+            :activities => [# Time spent on this story -->  2d 4h  = 20h
+                double(
+                    :occurred_at => DateTime.parse("2012-01-14 10:01:00 Z"),
+                    :event_type => "story_create",
+                    :description => "James Kirk created the story",
+                    :stories => [double(:current_state => "unscheduled")]
+                ),
+                double(
+                    :occurred_at => DateTime.parse("2012-01-15 11:00:00 Z"),
+                    :event_type => "story_update",
+                    :description => "James Kirk created the story",
+                    :stories => [double(
+                                     :current_state => "started"
+                                 )]
+                ),
+                double(
+                    :occurred_at => DateTime.parse("2012-01-17 15:00:00 Z"),
+                    :event_type => "story_update",
+                    :description => "James Kirk created the story",
+                    :stories => [double(
+                                     :current_state => "finished"
+                                 )]
+                )
+            ]
+        ),
 
         # ICEBOX
         double(
+            :id => 10,
             :story_type => Story::FEATURE,
             :created_at => DateTime.parse("2012-01-01 00:01:00 Z"), # iteration 0
             :updated_at => DateTime.parse("2012-01-01 00:01:00 Z"), # iteration 0
@@ -277,6 +382,7 @@ describe TimeChartPresenter do
 
         # BACKLOG
         double(
+            :id => 11,
             :story_type => Story::BUG,
             :created_at => DateTime.parse("2012-01-01 00:01:00 Z"), # iteration 3
             :updated_at => DateTime.parse("2012-01-15 09:01:00 Z"), # iteration 3
@@ -451,109 +557,27 @@ describe TimeChartPresenter do
       it "produces a chart" do
         rows = chart.data_table.rows
 
-        #row_values(rows, 0).should == ["Features", 19] #1d + 7 + 4
-        row_values(rows, 1).should == ["Bugs", 8]      #1d
-        row_values(rows, 2).should == ["Chores", 32]   #3d4h + 4
+        row_values(rows, 0).should == ["Features", 23] # 7 + 8 + 4 + 4
+        row_values(rows, 1).should == ["Bugs", 28]     #8 + 20
+        row_values(rows, 2).should == ["Chores", 40]   #32 + 8
 
       end
     end
 
-    #describe "charts that can be filtered" do
-    #
-    #  let(:story_filter) {Story::ALL_STORY_TYPES}
-    #  let(:chart) {@chart_presenter.send(chart_method, story_filter)}
-    #
-    #  describe "#discovery_and_acceptance_chart" do
-    #    let(:chart_method) {"discovery_and_acceptance_chart"}
-    #
-    #    it_should_behave_like "a chart generation method"
-    #
-    #    context "filtering by story type" do
-    #
-    #      let(:story_filter) {[Story::BUG] }
-    #
-    #      it "accepts an array of the story types to be filtered" do
-    #        rows = chart.data_table.rows
-    #
-    #        rows.length.should == 5
-    #        # I   Bc Ba
-    #        filter_tooltips(rows, 0).should == ["0", 0, 0]
-    #        filter_tooltips(rows, 1).should == ["1", 1, 0]
-    #        filter_tooltips(rows, 2).should == ["2", 0, 0]
-    #        filter_tooltips(rows, 3).should == ["3", 1, 0]
-    #        filter_tooltips(rows, 4).should == ["4", 0, 0]
-    #      end
-    #    end
-    #
-    #    it "produces an area chart for the discovery and subsequent acceptance of stories" do
-    #      rows = chart.data_table.rows
-    #
-    #      rows.length.should == 5
-    #      # I   Fc Fa Bc Ba Cc Ca
-    #      filter_tooltips(rows, 0).should == ["0", 1, 0, 0, 0, 0, 0]
-    #      filter_tooltips(rows, 1).should == ["1", 1, 1, 1, 0, 0, 0]
-    #      filter_tooltips(rows, 2).should == ["2", 1, 1, 0, 0, 0, 0]
-    #      filter_tooltips(rows, 3).should == ["3", 0, 0, 1, 0, 1, 0]
-    #      filter_tooltips(rows, 4).should == ["4", 0, 0, 0, 0, 0, 0]
-    #    end
-    #  end
-    #
-    #  describe "#acceptance_days_by_iteration_chart" do
-    #    let(:chart_method) {"acceptance_days_by_iteration_chart"}
-    #
-    #    it_should_behave_like "a chart generation method"
-    #
-    #    context "filtering by story type" do
-    #      let(:story_filter) {[Story::FEATURE]}
-    #
-    #      it "accepts an array of story types to filter" do
-    #        rows = chart.data_table.rows
-    #
-    #        rows.length.should == 2
-    #        # I  Fd
-    #        filter_tooltips(rows, 0).should == [1, 25]
-    #        filter_tooltips(rows, 1).should == [2, 06]
-    #      end
-    #    end
-    #
-    #    it "produces a scatter chart of accepted stories per iteration" do
-    #      rows = chart.data_table.rows
-    #
-    #      rows.length.should == 2
-    #      # I  Fd   Bd   Cd
-    #      filter_tooltips(rows, 0).should == [1, 25, nil, nil]
-    #      filter_tooltips(rows, 1).should == [2, 06, nil, nil]
-    #    end
-    #  end
-    #
-    #  describe "#acceptance_by_days_chart" do
-    #    let(:chart_method) {"acceptance_by_days_chart"}
-    #
-    #    it_should_behave_like "a chart generation method"
-    #
-    #    context "filtering by story type" do
-    #      let(:story_filter) {[Story::FEATURE, Story::CHORE]}
-    #
-    #      it "accepts an array of story types to filter" do
-    #        rows = chart.data_table.rows
-    #
-    #        rows.length.should == 26
-    #        # D    Fd Cd
-    #        filter_tooltips(rows, 6).should  == ["6",  1, 0]
-    #        filter_tooltips(rows, 25).should == ["25", 1, 0]
-    #      end
-    #    end
-    #
-    #    it "produces a bar chart for the time to acceptance of each story" do
-    #      rows = chart.data_table.rows
-    #
-    #      rows.length.should == 26
-    #      # D    Fd Bd Cd
-    #      filter_tooltips(rows, 6).should  == ["6",  1, 0, 0]
-    #      filter_tooltips(rows, 25).should == ["25", 1, 0, 0]
-    #    end
-    #  end
-    #end
+    describe "#impediments_time_chart" do
+      let(:chart_method) { "impediments_time_chart" }
+
+      it_should_behave_like "a chart generation method"
+
+      it "produces a chart" do
+        rows = chart.data_table.rows
+
+        row_values(rows, 0).should == ["Impediments", 32] #24h + 8h + 5h
+        row_values(rows, 1).should == ["Stories", 59]
+
+      end
+    end
+
   end
 
 

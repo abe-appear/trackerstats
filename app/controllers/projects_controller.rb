@@ -18,21 +18,12 @@ class ProjectsController < ApplicationController
     @velocity_range_chart.description = ""
 
     @charts = []
-    @charts << chart_presenter.accepted_story_types_chart
+    @charts << time_chart_presenter.accepted_story_types_chart
 
     @charts << time_chart_presenter.story_types_time_chart
 
-    # Chart 1: Velocity
-    @charts << chart_presenter.date_range_velocity_chart
+    @charts << time_chart_presenter.impediments_time_chart
 
-    # Chart 2:  When are features discovered?
-    @charts << chart_presenter.discovery_and_acceptance_chart(@story_filter)
-
-    # Chart 3: How long did it take for features to be accepted in each week?
-    @charts << chart_presenter.acceptance_days_by_iteration_chart(@story_filter)
-
-    # Chart 4: What is the distribution of time to acceptance for features?
-    @charts << chart_presenter.acceptance_by_days_chart(@story_filter)
   end
 
   private
