@@ -59,11 +59,8 @@ class TimeChartPresenter
   end
 
   def active_stories
-    puts @start_date
-    puts @end_date
     @active_stories = []
     @active_stories = @stories.select do |story|
-      puts story.updated_at
       ( story.updated_at > @start_date && story.updated_at < @end_date && (story.accepted? ? (story.accepted_at > @start_date) : true))
     end
   end
@@ -93,30 +90,25 @@ class TimeChartPresenter
 
   def time_spent_on_story(story)
     activities = story.activities
-    #activities = story.activities.select do |activity|
-    #  (activity.event_type == "story_update")
-    #  puts "activity_event_type= #{activity.event_type}"
-    #  #next if activity.stories.first.blank?
-    #end
-    puts "Printing the activities of story:"
+    #puts "Printing the activities of story:"
     progress_time = 0
     last_started_time = 0
     activities.each do |activity|
-      puts "Activity description = #{activity.description}"
-      puts "Activity event type  = #{activity.event_type}"
+      #puts "Activity description = #{activity.description}"
+      #puts "Activity event type  = #{activity.event_type}"
       next unless activity.event_type == "story_update"
       next if activity.description.include? "edited"
       next if activity.description.include? "estimated"
       current_state = activity.stories.first.current_state
-      puts "current state = #{current_state}"
-      puts "activity occured = #{activity.occurred_at}"
+      #puts "current state = #{current_state}"
+      #puts "activity occured = #{activity.occurred_at}"
       next if current_state == "unknown"
       unless last_started_time == 0
         time_difference  = Time.diff( activity.occurred_at , last_started_time)
-        puts "time difference = #{time_difference}"
+        #puts "time difference = #{time_difference}"
         progress_time += (time_difference[:week] * 7 * 24) + (time_difference[:day] * 8) + time_difference[:hour]
         last_started_time = 0
-        puts "progress time"
+        #puts "progress time"
         puts progress_time
       end
       if (current_state == "started")
@@ -126,19 +118,19 @@ class TimeChartPresenter
     if (last_started_time != 0)
       # story is started, but not finished. The time in progress is from started time until now
       time_difference  = Time.diff( Time.now , last_started_time)
-      puts "time difference = #{time_difference}"
+      #puts "time spent on story = #{time_difference}"
       progress_time += (time_difference[:week] * 7 * 24) + (time_difference[:day] * 8) + time_difference[:hour]
     end
     return progress_time
   end
 
   def time_spent_on_stories_with_types(types)
-    puts types
+    #puts types
     result = 0;
     active_stories_with_types(types).each do |story|
       result += time_spent_on_story(story)
     end
-    puts result;
+    #puts result;
     return result;
   end
 
