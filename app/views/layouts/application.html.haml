@@ -9,7 +9,7 @@
   %body
     %header
       .container
-        %h1= link_to "Tracker Stats", projects_path
+        %h1= link_to "Pivotal Time Tracker", projects_path
         - if authorized?
           = link_to "Logout", logout_path, method: :delete, class: "logout"
     #content

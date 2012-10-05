@@ -21,6 +21,7 @@ FactoryGirl.define do
   end
 
   factory :story, class: Story do
+    sequence(:id, 1)
     ignore do
       iteration FactoryGirl.build :iteration,
                                   number: 1,
@@ -40,5 +41,21 @@ FactoryGirl.define do
     trait :accepted do current_state "accepted" end
 
   end
+
+  factory :activity, class: Activity do
+    sequence(:id, 1)
+    #sequence(:start, 0) { |n| n.weeks.from_now.to_date }
+    #finish { start + 1.week }
+
+    #factory :iteration_with_stories do
+    #  stories { [
+    #      FactoryGirl.build(:story, :feature, :accepted, created_at: start + 2.days),
+    #      FactoryGirl.build(:story, :chore, :started, created_at: start + 2.days),
+    #      FactoryGirl.build(:story, :bug, :accepted, created_at: start + 2.days)
+    #  ] }
+    #end
+
+  end
+
 
 end

@@ -54,9 +54,6 @@ class ChartPresenter
     end
   end
 
-  def impediments_tracker_chart(title = "Impediments Stories")
-
-  end
   def accepted_story_types_chart(title = "Accepted Story Types")
     colors = []
     data_table = GoogleVisualr::DataTable.new
@@ -338,6 +335,14 @@ private
 
   def accepted_stories_with_types(types)
     stories_with_types_states(types, ["accepted"])
+  end
+
+  def time_spent_on_stories_with_type(types)
+    days_spent_on_stories = 0;
+    stories_with_types_states(types, ["accepted"]).each do |story|
+      days_spent_on_stories += interval_in_days story.accepted_at, story.created_at
+    end
+    return days_spent_on_stories
   end
 
   def iteration_number(timestamp)

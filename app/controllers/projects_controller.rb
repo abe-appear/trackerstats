@@ -11,6 +11,7 @@ class ProjectsController < ApplicationController
     iterations = @project.iterations
 
     chart_presenter = ChartPresenter.new(iterations, stories, @start_date, @end_date)
+    time_chart_presenter = TimeChartPresenter.new(iterations, stories, @start_date, @end_date)
     @active_iterations = chart_presenter.active_iterations
 
     @velocity_range_chart = chart_presenter.whole_project_velocity_chart()
@@ -19,7 +20,7 @@ class ProjectsController < ApplicationController
     @charts = []
     @charts << chart_presenter.accepted_story_types_chart
 
-    @charts << chart_presenter.impediments_tracker_chart
+    @charts << time_chart_presenter.story_types_time_chart
 
     # Chart 1: Velocity
     @charts << chart_presenter.date_range_velocity_chart
